@@ -42,11 +42,11 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
       ref: inputValueRef.current,
       path: 'value',
       // setValue(ref: any, value) {
-      //   inpurtValueRef.current.value = value;
+      //   inputValueRef.current.value = value;
       //   inputElementRef.current.setNativeProps({ text: value });
       // },
       // clearValue() {
-      //   inpurtValueRef.current.value = '';
+      //   inputValueRef.current.value = '';
       //   inputElementRef.current.clear();
       // },
     });
@@ -57,6 +57,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
       <Icon name={icon} size={20} color="#666360" />
       <TextInput
         {...rest}
+        ref={inputElementRef}
         keyboardAppearance="dark"
         placeholderTextColor="#666360"
         defaultValue={defaultValue}
