@@ -1,4 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import { TextInputProps } from 'react-native';
 import { useField } from '@unform/core';
 
@@ -13,24 +18,37 @@ interface InputValueReference {
   value: string;
 }
 
-const Input: React.FC<InputProps> = ({ name, icon, ...rest }) => {
+interface InputRef {
+  focus(): void;
+}
+
+const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
+  { name, icon, ...rest },
+  ref,
+) => {
   const inputElementRef = useRef<any>(null);
   const { registerField, defaultValue = '', fieldName, error } = useField(name);
-  const inpurtValueRef = useRef<InputValueReference>({ value: defaultValue });
+  const inputValueRef = useRef<InputValueReference>({ value: defaultValue });
+
+  useImperativeHandle(ref, () => ({
+    focus() {
+      inputElementRef.current.focus();
+    },
+  }));
 
   useEffect(() => {
     registerField<string>({
       name: fieldName,
-      ref: inpurtValueRef.current,
+      ref: inputValueRef.current,
       path: 'value',
-      setValue(ref: any, value) {
-        inpurtValueRef.current.value = value;
-        inputElementRef.current.setNativeProps({ text: value });
-      },
-      clearValue() {
-        inpurtValueRef.current.value = '';
-        inputElementRef.current.clear();
-      },
+      // setValue(ref: any, value) {
+      //   inpurtValueRef.current.value = value;
+      //   inputElementRef.current.setNativeProps({ text: value });
+      // },
+      // clearValue() {
+      //   inpurtValueRef.current.value = '';
+      //   inputElementRef.current.clear();
+      // },
     });
   }, [fieldName, registerField]);
 
@@ -43,11 +61,11 @@ const Input: React.FC<InputProps> = ({ name, icon, ...rest }) => {
         placeholderTextColor="#666360"
         defaultValue={defaultValue}
         onChangeText={value => {
-          inpurtValueRef.current.value = value;
+          inputValueRef.current.value = value;
         }}
       />
     </Container>
   );
 };
 
-export default Input;
+export default forwardRef(Input);
