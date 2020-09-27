@@ -19,6 +19,7 @@ import Input from '../../components/Input';
 import logoImg from '../../assets/logo.png';
 import { Container, Title, BackToSignIn, BackToSignInText } from './styles';
 import getValidationErrors from '../../utils/getValidationErros';
+import api from '../../services/api';
 
 interface SignUpFormData {
   name: string;
@@ -48,9 +49,12 @@ const SignUp: React.FC = () => {
       await schema.validate(data, {
         abortEarly: false,
       });
-
-      // await api.post('/users', data);
-      // history.push('/');
+      await api.post('/users', data);
+      Alert.alert(
+        'Cadastro realizado com sucesso!',
+        'Você já pode fazer login na aplicação.',
+      );
+      navigation.goBack();
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationErrors(err);
@@ -82,7 +86,7 @@ const SignUp: React.FC = () => {
             <View>
               <Title>Crie sua conta</Title>
             </View>
-            <Form ref={formRef} onSubmit={handleSignUp}>
+            <Form onSubmit={handleSignUp} ref={formRef}>
               <Input
                 autoCapitalize="words"
                 name="name"
